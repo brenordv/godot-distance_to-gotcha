@@ -1,0 +1,192 @@
+[gd_scene load_steps=11 format=3 uid="uid://bq26sjcqwvh7s"]
+
+[ext_resource type="Script" path="res://cube.gd" id="1_u8x7m"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vaxer"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_ge7dd"]
+sky_material = SubResource("ProceduralSkyMaterial_vaxer")
+
+[sub_resource type="Environment" id="Environment_c1p5f"]
+background_mode = 2
+sky = SubResource("Sky_ge7dd")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_227f0"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t3wbf"]
+albedo_color = Color(1, 0, 0.0392157, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r4q7b"]
+albedo_color = Color(6.61798e-07, 0.502893, 0.0729985, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_jwvwf"]
+font_size = 28
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_erjjh"]
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_yuq4o"]
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Level" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_c1p5f")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+material_override = SubResource("StandardMaterial3D_227f0")
+size = Vector3(10, 0.1, 10)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 1.5, 5)
+
+[node name="RedCube" type="CSGBox3D" parent="." node_paths=PackedStringArray("other_object", "distance_to_label", "distance_to_squared_label", "distance_to_with_ref_label", "size_and_position_label", "raycast_distance_label", "raycast_distance_with_offset_label", "intersectray_distance_label", "measure_from_ref_point")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, 0)
+material_override = SubResource("StandardMaterial3D_t3wbf")
+use_collision = true
+script = ExtResource("1_u8x7m")
+other_object = NodePath("../GreenCube")
+distance_to_label = NodePath("../Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/DistanceToLabel")
+distance_to_squared_label = NodePath("../Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/DistanceToSquaredLabel")
+distance_to_with_ref_label = NodePath("../Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/DistanceToUsingRefLabel")
+size_and_position_label = NodePath("../Container/MarginContainer/VBoxContainer/HBoxContainer/RedCubeInfo")
+raycast_distance_label = NodePath("../Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/RayCastDistanceLabel")
+raycast_distance_with_offset_label = NodePath("../Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/RayCastDistanceWithOffsetLabel")
+intersectray_distance_label = NodePath("../Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/IntersectRayDistanceLabel2")
+measure_from_ref_point = NodePath("MeasureFromRefPoint")
+can_move = true
+
+[node name="RayCast3D" type="RayCast3D" parent="RedCube"]
+enabled = false
+target_position = Vector3(10, 0, 0)
+hit_from_inside = true
+collide_with_areas = true
+debug_shape_custom_color = Color(1, 0, 0, 1)
+debug_shape_thickness = 5
+
+[node name="MeasureFromRefPoint" type="Node3D" parent="RedCube"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+
+[node name="GreenCube" type="CSGBox3D" parent="." node_paths=PackedStringArray("size_and_position_label")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+material_override = SubResource("StandardMaterial3D_r4q7b")
+use_collision = true
+script = ExtResource("1_u8x7m")
+size_and_position_label = NodePath("../Container/MarginContainer/VBoxContainer/HBoxContainer/GreenCubeInfo")
+
+[node name="Container" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="MarginContainer" type="MarginContainer" parent="Container"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="InstructionsLabel" type="Label" parent="Container/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "Use WASD to move the red cube around."
+label_settings = SubResource("LabelSettings_jwvwf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_constants/separation = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="DistanceToLabel" type="Label" parent="Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "asdasd"
+label_settings = SubResource("LabelSettings_jwvwf")
+
+[node name="DistanceToUsingRefLabel" type="Label" parent="Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "asdasd"
+label_settings = SubResource("LabelSettings_jwvwf")
+
+[node name="DistanceToSquaredLabel" type="Label" parent="Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "asdasd"
+label_settings = SubResource("LabelSettings_jwvwf")
+
+[node name="RayCastDistanceLabel" type="Label" parent="Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "Raycast distance :"
+label_settings = SubResource("LabelSettings_jwvwf")
+
+[node name="RayCastDistanceWithOffsetLabel" type="Label" parent="Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "Raycast distance - offset:"
+label_settings = SubResource("LabelSettings_jwvwf")
+
+[node name="IntersectRayDistanceLabel2" type="Label" parent="Container/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "Intersect ray:"
+label_settings = SubResource("LabelSettings_jwvwf")
+
+[node name="HSeparator" type="HSeparator" parent="Container/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RedCubeInfo" type="Label" parent="Container/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "asdasd"
+label_settings = SubResource("LabelSettings_erjjh")
+horizontal_alignment = 1
+
+[node name="GreenCubeInfo" type="Label" parent="Container/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "asdasd"
+label_settings = SubResource("LabelSettings_yuq4o")
+horizontal_alignment = 1
